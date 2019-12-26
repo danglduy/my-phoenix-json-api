@@ -1,0 +1,284 @@
+openapi: 3.0.1
+info:
+  title: My App
+  description: A Phoenix App
+#   termsOfService: Pending
+#   contact:
+#     email: 
+#   license:
+#     name: MIT License
+#     url: https://opensource.org/licenses/MIT
+  version: 0.0.1
+# externalDocs:
+#   description:
+#   url: 
+# servers:
+# - url: 
+paths:
+  /registrations:
+    post:
+      tags:
+      - Registration
+      summary: Signup
+      operationId: sign_up
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /sessions:
+    post:
+      tags:
+      - Session
+      summary: Signin
+      operationId: sign_in
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+    delete:
+      security:
+        - cookieAuth: []
+      tags:
+      - Session
+      summary: Signout
+      operationId: sign_out
+      responses:
+        204:
+          description: no_content
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /users:
+    post:
+      security:
+        - cookieAuth: []
+      tags:
+      - User
+      summary: Create user
+      operationId: create_user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+        required: true
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+    get:
+      security:
+        - cookieAuth: []
+      tags:
+      - User
+      summary: List users
+      operationId: get_list_of_users
+      parameters:
+      - name: items
+        in: query
+        schema:
+          type: integer
+      - name: page
+        in: query
+        schema:
+          type: integer
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  items:
+                    type: integer
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{user_id}:
+    get:
+      security:
+        - cookieAuth: []
+      tags:
+      - User
+      summary: Show info of an user
+      operationId: get_user_by_id
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      security:
+        - cookieAuth: []
+      tags:
+      - User
+      summary: Update user
+      operationId: update_user_by_id
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        inserted_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      xml:
+        name: User
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          description: Error code
+        errorMessage:
+          type: string
+          description: Error description
+  securitySchemes:
+    cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
+      in: cookie
+      name: _my_app_key  # cookie name      
+  #   bearerAuth:
+  #     type: http
+  #     scheme: bearer
+  #     bearerFormat: JWT
+  #     description: To be implemented later

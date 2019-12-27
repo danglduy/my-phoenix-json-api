@@ -19,7 +19,7 @@ paths:
     post:
       tags:
       - Registration
-      summary: User sign up
+      summary: Create an registration
       operationId: sign_up
       requestBody:
         content:
@@ -28,13 +28,13 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        201:
+        '201':
           description: created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
@@ -45,7 +45,7 @@ paths:
     post:
       tags:
       - Session
-      summary: User sign in
+      summary: Create user session
       operationId: sign_in
       requestBody:
         content:
@@ -54,19 +54,19 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        201:
+        '201':
           description: created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        401:
+        '401':
           description: unauthenticated
           content:
             application/json:
@@ -78,12 +78,12 @@ paths:
         - cookieAuth: []
       tags:
       - Session
-      summary: User sign out
+      summary: Destroy user session
       operationId: sign_out
       responses:
-        204:
+        '204':
           description: no_content
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
@@ -105,13 +105,13 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        201:
+        '201':
           description: created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
@@ -135,7 +135,7 @@ paths:
         schema:
           type: integer
       responses:
-        200:
+        '200':
           description: success
           content:
             application/json:
@@ -152,7 +152,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
@@ -173,19 +173,19 @@ paths:
         schema:
           type: string
       responses:
-        200:
+        '200':
           description: success
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        404:
+        '404':
           description: not_found
           content:
             application/json:
@@ -211,19 +211,19 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        200:
+        '200':
           description: success
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        404:
+        '404':
           description: not_found
           content:
             application/json:
@@ -257,15 +257,15 @@ paths:
                         type: string
         required: true
       responses:
-        204:
+        '204':
           description: no_content
-        400:
+        '400':
           description: bad_request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        404:
+        '404':
           description: not_found
           content:
             application/json:
@@ -300,12 +300,11 @@ components:
     Error:
       type: object
       properties:
-        error_code:
-          type: number
-          description: Error code
-        error_message:
-          type: string
-          description: Error description
+        errors:
+          type: object
+          properties:
+            detail: 
+              type: string
   securitySchemes:
     cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
       type: apiKey

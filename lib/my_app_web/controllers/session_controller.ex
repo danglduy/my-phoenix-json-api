@@ -9,8 +9,8 @@ defmodule MyAppWeb.SessionController do
         conn
         |> put_session(:current_user_id, user.id)
         |> put_status(:ok)
-        |> put_view(MyAppWeb.SessionView)
-        |> render("sign_in.json", user: user)
+        |> put_view(MyAppWeb.UserView)
+        |> render("show.json", user: user)
 
       {:error, message} ->
         conn
@@ -19,5 +19,11 @@ defmodule MyAppWeb.SessionController do
         |> put_view(MyAppWeb.ErrorView)
         |> render("401.json", message: message)
     end
+  end
+
+  def delete(conn, _params) do
+    conn
+    |> delete_session(:current_user_id)
+    |> send_resp(:no_content, "")
   end
 end

@@ -6,7 +6,11 @@ defmodule MyApp.AuthTest do
   describe "users" do
     alias MyApp.Auth.User
 
-    @valid_attrs %{email: "some email", is_active: true, password: "some password"}
+    @valid_attrs %{
+      email: "some email",
+      is_active: true,
+      password: "some password"
+    }
     @update_attrs %{
       email: "some updated email",
       is_active: false,
@@ -54,7 +58,10 @@ defmodule MyApp.AuthTest do
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Auth.update_user(user, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Auth.update_user(user, @invalid_attrs)
+
       assert user == Auth.get_user!(user.id)
       assert Bcrypt.verify_pass("some password", user.password_hash)
     end
@@ -72,8 +79,13 @@ defmodule MyApp.AuthTest do
 
     test "authenticate_user/2 authenticates the user" do
       user = user_fixture()
-      assert {:error, "Wrong email or password"} = Auth.authenticate_user("wrong email", "")
-      assert {:ok, authenticated_user} = Auth.authenticate_user(user.email, @valid_attrs.password)
+
+      assert {:error, "Wrong email or password"} =
+               Auth.authenticate_user("wrong email", "")
+
+      assert {:ok, authenticated_user} =
+               Auth.authenticate_user(user.email, @valid_attrs.password)
+
       assert %{user | password: nil} == authenticated_user
     end
   end

@@ -1,5 +1,6 @@
 defmodule MyAppWeb.Router do
   use MyAppWeb, :router
+  alias MyAppWeb.ErrorView
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -12,13 +13,17 @@ defmodule MyAppWeb.Router do
 
   scope "/api", MyAppWeb do
     pipe_through :api
-    post "/sign_in", SessionController, :create
-    post "/sign_up", RegistrationController, :create
-  end
 
-  scope "/api", MyAppWeb do
-    pipe_through [:api, :api_auth]
-    resources "/users", UserController, except: [:new, :edit]
+    scope "/v1" do
+      post "/registrations", RegistrationController, :create
+      post "/sessions", SessionController, :create
+    end
+
+    scope "/v1" do
+      pipe_through [:api_auth]
+      delete "/sessions", SessionController, :delete
+      resources "/users", UserController, except: [:new, :edit]
+    end
   end
 
   # Plug function
@@ -30,7 +35,7 @@ defmodule MyAppWeb.Router do
     else
       conn
       |> put_status(:unauthorized)
-      |> put_view(MyAppWeb.ErrorView)
+      |> put_view(ErrorView)
       |> render("401.json", message: "Unauthenticated user")
       |> halt()
     end

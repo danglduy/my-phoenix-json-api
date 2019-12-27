@@ -6,7 +6,7 @@ defmodule MyAppWeb.RegistrationController do
 
   action_fallback MyAppWeb.FallbackController
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{} = user_params) do
     with {:ok, %User{} = user} <- Auth.create_user(user_params) do
       conn
       |> put_status(:created)

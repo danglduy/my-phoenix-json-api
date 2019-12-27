@@ -18,7 +18,8 @@ config :my_app, MyApp.Repo, migration_timestamps: [type: :utc_datetime_usec]
 # Configures the endpoint
 config :my_app, MyAppWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "gsFJbSuUNQmnPHv4vx0xB3E0EdadZsZb/d0PwaoEUI/qd6Oij+QK6mvX/HwuWYQI",
+  secret_key_base:
+    "gsFJbSuUNQmnPHv4vx0xB3E0EdadZsZb/d0PwaoEUI/qd6Oij+QK6mvX/HwuWYQI",
   render_errors: [view: MyAppWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: MyApp.PubSub, adapter: Phoenix.PubSub.PG2]
 

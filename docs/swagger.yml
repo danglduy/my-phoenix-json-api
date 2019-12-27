@@ -12,25 +12,20 @@ info:
 # externalDocs:
 #   description:
 #   url: 
-# servers:
-# - url: 
+servers:
+- url: /v1
 paths:
   /registrations:
     post:
       tags:
       - Registration
-      summary: Signup
+      summary: User sign up
       operationId: sign_up
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
+              $ref: '#/components/schemas/User'
         required: true
       responses:
         201:
@@ -50,18 +45,13 @@ paths:
     post:
       tags:
       - Session
-      summary: Signin
+      summary: User sign in
       operationId: sign_in
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
+              $ref: '#/components/schemas/User'
         required: true
       responses:
         201:
@@ -88,7 +78,7 @@ paths:
         - cookieAuth: []
       tags:
       - Session
-      summary: Signout
+      summary: User sign out
       operationId: sign_out
       responses:
         204:
@@ -110,12 +100,9 @@ paths:
       operationId: create_user
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/User'
         required: true
       responses:
         201:
@@ -219,12 +206,9 @@ paths:
           type: string
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/User'
         required: true
       responses:
         200:
@@ -246,6 +230,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-codegen-request-body-name: body
+  /users/delete:
+    post:
+      security:
+        - cookieAuth: []
+      tags:
+      - User
+      summary: Delete users
+      operationId: delete_user_by_ids
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - users
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - id
+                    properties:
+                      id:
+                        type: string
+        required: true
+      responses:
+        204:
+          description: no_content
+        400:
+          description: bad_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
 components:
   schemas:
     User:
@@ -253,23 +279,31 @@ components:
       properties:
         id:
           type: integer
+          readOnly: true
         email:
           type: string
+          format: email
+        password:
+          type: string
+          format: password
+          writeOnly: true
         inserted_at:
           type: string
           format: date-time
+          readOnly: true
         updated_at:
           type: string
           format: date-time
+          readOnly: true
       xml:
         name: User
     Error:
       type: object
       properties:
-        errorCode:
-          type: integer
+        error_code:
+          type: number
           description: Error code
-        errorMessage:
+        error_message:
           type: string
           description: Error description
   securitySchemes:

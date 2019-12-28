@@ -11,12 +11,19 @@ defmodule MyAppWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Auth.create_user(user_params) do
+  def create(conn, %{"users" => users}) do
+    with {:ok, %{} = inserted_users_map} <- Auth.create_users(users) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> render("index.json", users: inserted_users_map |> Map.values())
+    else
+      {:error, failed_index, %Ecto.Changeset{} = changeset, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render("error_create_users.json",
+          failed_index: failed_index,
+          changeset: changeset
+        )
     end
   end
 

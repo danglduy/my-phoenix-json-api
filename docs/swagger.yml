@@ -138,13 +138,18 @@ paths:
         - cookieAuth: []
       tags:
       - User
-      summary: Create user
-      operationId: create_user
+      summary: Create users
+      operationId: create_users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/User'
         required: true
       responses:
         '201':
@@ -152,7 +157,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '400':
           description: bad_request
           content:
@@ -169,12 +176,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DataError'
-              example:
-                status: 422
-                errors: [{
-                  detail: 'Email is already in use',
-                }]
+                type: object
+                properties:
+                  status:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail: 
+                          type: string
+                  failed_index:
+                    type: number
+                  failed_email:
+                    type: string
+                    format: email
       x-codegen-request-body-name: body
     get:
       security:

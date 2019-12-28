@@ -4,9 +4,10 @@ defmodule MyApp.Auth do
   """
 
   import Ecto.Query, warn: false
-  alias MyApp.Repo
 
+  alias MyApp.Repo
   alias MyApp.Auth.User
+  alias Ecto.Multi
 
   @doc """
   Returns the list of users.
@@ -53,6 +54,12 @@ defmodule MyApp.Auth do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_users(users \\ []) do
+    Multi.new()
+    |> insert_users(users |> Enum.with_index())
+    |> Repo.transaction()
   end
 
   @doc """
@@ -119,5 +126,13 @@ defmodule MyApp.Auth do
     else
       {:error, "Wrong email or password"}
     end
+  end
+
+  defp insert_users(multi, []), do: multi
+
+  defp insert_users(multi, [{user, user_index} | users]) do
+    multi
+    |> Multi.insert(user_index, User.changeset(%User{}, user))
+    |> insert_users(users)
   end
 end

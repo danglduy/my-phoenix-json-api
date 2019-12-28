@@ -40,6 +40,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
+        '422':
+          description: unprocessable_entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataError'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Email is already in use',
+                }]
       x-codegen-request-body-name: body
   /sessions:
     post:
@@ -66,12 +82,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
         '401':
           description: unauthenticated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Bad credentials',
+                }]
       x-codegen-request-body-name: body
     delete:
       security:
@@ -89,6 +115,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
+        '401':
+          description: unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Bad credentials',
+                }]
       x-codegen-request-body-name: body
   /users:
     post:
@@ -117,6 +159,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
+        '422':
+          description: unprocessable_entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataError'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Email is already in use',
+                }]
       x-codegen-request-body-name: body
     get:
       security:
@@ -158,6 +216,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
+        '404':
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: '404'
+                errors: [{
+                  detail: 'Not found'
+                }]
+        '422':
+          description: unprocessable_entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataError'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Email is already in use',
+                }]
   /users/{user_id}:
     get:
       security:
@@ -223,12 +308,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
         '404':
           description: not_found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '404'
+                errors: [{
+                  detail: 'Not found'
+                }]
+        '422':
+          description: unprocessable_entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataError'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Email is already in use',
+                }]
       x-codegen-request-body-name: body
   /users/delete:
     post:
@@ -265,12 +371,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '400'
+                errors: [{
+                  detail: 'Bad request'
+                }]
         '404':
           description: not_found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                status: '404'
+                errors: [{
+                  detail: 'Not found'
+                }]
+        '422':
+          description: unprocessable_entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataError'
+              example:
+                status: 422
+                errors: [{
+                  detail: 'Email is already in use',
+                }]
       x-codegen-request-body-name: body
 components:
   schemas:
@@ -299,12 +426,36 @@ components:
         name: User
     Error:
       type: object
+      required:
+        - status
+        - errors
       properties:
+        status:
+          type: string
         errors:
-          type: object
-          properties:
-            detail: 
-              type: string
+          type: array
+          items:
+            required:
+              - detail
+            properties:
+              detail: 
+                type: string
+    DataError:
+      type: object
+      required:
+        - status
+        - errors
+      properties:
+        status:
+          type: string
+        errors:
+          type: array
+          items:
+            required:
+              - detail
+            properties:
+              detail: 
+                type: string
   securitySchemes:
     cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
       type: apiKey

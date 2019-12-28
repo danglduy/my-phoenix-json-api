@@ -19,6 +19,7 @@ defmodule MyApp.Auth.User do
     user
     |> cast(attrs, [:email, :password])
     |> validate_required([:email, :password])
+    |> unsafe_validate_unique([:email], MyApp.Repo, message: "is already in use")
     |> unique_constraint(:email)
     |> put_password_hash()
   end

@@ -30,4 +30,39 @@ defmodule MyAppWeb.ErrorHelpers do
       Gettext.dgettext(MyAppWeb.Gettext, "errors", msg, opts)
     end
   end
+
+  @doc """
+  *Unused*
+  Source: https://elixirforum.com/t/generating-constraint-error-messages/15037
+  """
+  def full_messages(%Ecto.Changeset{} = changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(&full_message/3)
+    |> Enum.flat_map(&elem(&1, 1))
+  end
+
+  def mapped_messages(%Ecto.Changeset{} = changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(&mapped_message/3)
+    |> Enum.flat_map(&elem(&1, 1))
+  end
+
+  defp full_message(%Ecto.Changeset{} = changeset, key, error) do
+    module_name = inspect(changeset.data.__struct__)
+    key_path = "#{module_name}.#{key}"
+
+    key_name =
+      case Gettext.dgettext(MyAppWeb.Gettext, "schema", key_path) do
+        ^key_path -> Phoenix.Naming.humanize(key)
+        n -> n
+      end
+
+    "#{key_name} #{MyAppWeb.ErrorHelpers.translate_error(error)}"
+  end
+
+  defp mapped_message(%Ecto.Changeset{} = changeset, key, error) do
+    %{
+      detail: full_message(changeset, key, error)
+    }
+  end
 end

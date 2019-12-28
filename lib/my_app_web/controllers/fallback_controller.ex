@@ -5,8 +5,8 @@ defmodule MyAppWeb.FallbackController do
   See `Phoenix.Controller.action_fallback/1` for more details.
   """
   use MyAppWeb, :controller
-  alias MyAppWeb.Errors
   alias MyAppWeb.ErrorView
+  alias MyAppWeb.ChangesetView
 
   def call(conn, {:error, :not_found}) do
     conn
@@ -18,7 +18,7 @@ defmodule MyAppWeb.FallbackController do
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> put_view(ErrorView)
-    |> render("422.json", message: changeset |> Errors.full_messages())
+    |> put_view(ChangesetView)
+    |> render("error.json", changeset: changeset)
   end
 end

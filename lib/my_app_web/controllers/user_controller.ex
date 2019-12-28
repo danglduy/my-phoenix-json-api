@@ -40,10 +40,10 @@ defmodule MyAppWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Auth.get_user!(id)
+  def delete(conn, %{"users" => user_ids}) do
+    users = user_ids |> Enum.map(& &1["id"])
 
-    with {:ok, %User{}} <- Auth.delete_user(user) do
+    with {:ok, %{}} <- Auth.delete_users(users) do
       send_resp(conn, :no_content, "")
     end
   end

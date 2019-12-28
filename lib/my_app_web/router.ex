@@ -22,7 +22,8 @@ defmodule MyAppWeb.Router do
     scope "/v1" do
       pipe_through [:api_auth]
       delete "/sessions", SessionController, :delete
-      resources "/users", UserController, except: [:new, :edit]
+      post "/users/delete", UserController, :delete
+      resources "/users", UserController, except: [:new, :edit, :delete]
     end
   end
 

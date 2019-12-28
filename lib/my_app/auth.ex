@@ -96,6 +96,12 @@ defmodule MyApp.Auth do
     Repo.delete(user)
   end
 
+  def delete_users(users) do
+    Multi.new()
+    |> drop_users(users |> Enum.with_index())
+    |> Repo.transaction()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
@@ -133,6 +139,14 @@ defmodule MyApp.Auth do
   defp insert_users(multi, [{user, user_index} | users]) do
     multi
     |> Multi.insert(user_index, User.changeset(%User{}, user))
+    |> insert_users(users)
+  end
+
+  defp drop_users(multi, []), do: multi
+
+  defp drop_users(multi, [{user, user_index} | users]) do
+    multi
+    |> Multi.delete(user_index, Repo.get!(User, user))
     |> insert_users(users)
   end
 end

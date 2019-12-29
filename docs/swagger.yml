@@ -367,17 +367,14 @@ paths:
             schema:
               type: object
               required:
-                - users
+                - ids
               properties:
-                users:
+                user_ids:
                   type: array
                   items:
-                    type: object
-                    required:
-                      - id
-                    properties:
-                      id:
-                        type: string
+                    type: string
+              example:
+                ids: ["1", "2"]
         required: true
       responses:
         '204':

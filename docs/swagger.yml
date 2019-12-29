@@ -260,7 +260,7 @@ paths:
                 errors: [{
                   detail: 'Email is already in use',
                 }]
-  /users/{user_id}:
+  /users/{id}:
     get:
       security:
         - cookieAuth: []
@@ -269,7 +269,7 @@ paths:
       summary: Show info of an user
       operationId: get_user_by_id
       parameters:
-      - name: user_id
+      - name: id
         in: path
         required: true
         schema:
@@ -301,7 +301,7 @@ paths:
       summary: Update user
       operationId: update_user_by_id
       parameters:
-      - name: user_id
+      - name: id
         in: path
         required: true
         schema:
